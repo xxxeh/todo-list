@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"go1f/pkg/db"
 	"go1f/pkg/server"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -15,7 +17,17 @@ func init() {
 }
 
 func main() {
-	err := server.Run()
+	dbFile := os.Getenv("TODO_DBFILE")
+	if len(dbFile) == 0 {
+		fmt.Println("Environment variable TODO_DBFILE is not defined")
+	}
+
+	err := db.Init(dbFile)
+	if err != nil {
+		panic(err)
+	}
+
+	err = server.Run()
 	if err != nil {
 		panic(err)
 	}
