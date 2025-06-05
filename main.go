@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Инициализация переменных окружения из файла .env
 func init() {
 	if err := godotenv.Load(); err != nil {
 		fmt.Println("No .env file found")
@@ -16,7 +17,6 @@ func init() {
 func main() {
 	err := server.Run()
 	if err != nil {
-		fmt.Println(err.Error())
 		panic(err)
 	}
 }

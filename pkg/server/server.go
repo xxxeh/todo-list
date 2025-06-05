@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+// Run запускает сервер
+// Порт для сервера должен быть указан в переменной окружения TODO_PORT
 func Run() error {
 	port := os.Getenv("TODO_PORT")
 	if len(port) == 0 {
