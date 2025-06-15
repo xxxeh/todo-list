@@ -251,6 +251,8 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 				day[lastDay] = false
 				day[penultDay] = false
 				lastDayOfMonth = time.Date(date.Year(), currentMonth+1, 1, 0, 0, 0, 0, time.Local).AddDate(0, 0, -1)
+				lastDay = lastDayOfMonth.Day()
+				penultDay = lastDayOfMonth.Day() - 1
 				day[lastDay] = true
 				day[penultDay] = true
 			}
