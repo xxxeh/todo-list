@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"go1f/pkg/api"
 )
 
 // Run запускает сервер.
@@ -15,5 +17,6 @@ func Run() error {
 	}
 
 	http.Handle("/", http.FileServer(http.Dir("web")))
+	api.Init()
 	return http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
