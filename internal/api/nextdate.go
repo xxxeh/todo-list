@@ -138,58 +138,6 @@ func nextDayOfWeek(date, now time.Time, params []string) (time.Time, error) {
 	return date, nil
 }
 
-// func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
-// 	if len(params) == 1 {
-// 		return date, fmt.Errorf("Не указан интервал")
-// 	}
-
-// 	var day [32]bool
-// 	var month [13]bool
-
-// 	for _, val := range strings.Split(params[1], ",") {
-// 		d, err := strconv.Atoi(val)
-// 		if err != nil {
-// 			return date, err
-// 		}
-// 		if d < -2 || d > 31 || d == 0 {
-// 			return date, fmt.Errorf("Недопустимое значение дня %d", d)
-// 		}
-
-// 		if d > 0 {
-// 			day[d] = true
-// 		} else {
-// 			day[len(day)+d] = true
-// 		}
-
-// 	}
-
-// 	if len(params) > 2 {
-// 		for _, val := range strings.Split(params[2], ",") {
-// 			m, err := strconv.Atoi(val)
-// 			if err != nil {
-// 				return date, err
-// 			}
-// 			if m < 1 || m > 12 {
-// 				return date, fmt.Errorf("Недопустимое значение месяца %d", m)
-// 			}
-
-// 			month[m] = true
-// 		}
-// 	} else {
-// 		for i := range month {
-// 			month[i] = true
-// 		}
-// 	}
-
-// 	for {
-// 		date = date.AddDate(0, 0, 1)
-// 		if date.After(now) && day[date.Day()] && month[date.Month()] {
-// 			break
-// 		}
-// 	}
-// 	return date, nil
-// }
-
 func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 	if len(params) == 1 {
 		return date, fmt.Errorf("Не указан интервал")

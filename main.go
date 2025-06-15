@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"go1f/pkg/db"
-	"go1f/pkg/server"
+
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/xxxeh/todo-list/internal/db"
+	"github.com/xxxeh/todo-list/internal/server"
 )
 
 // Инициализация переменных окружения из файла .env
