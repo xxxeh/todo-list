@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"go1f/pkg/api"
+	"github.com/xxxeh/todo-list/internal/api"
 )
 
 // Run запускает сервер.
