@@ -16,7 +16,6 @@ func Run() error {
 		return fmt.Errorf("Environment variable TODO_PORT is not defined")
 	}
 
-	http.Handle("/", http.FileServer(http.Dir("web")))
-	api.Init()
-	return http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
+	r := api.Init()
+	return http.ListenAndServe(fmt.Sprintf(":%s", port), r)
 }
