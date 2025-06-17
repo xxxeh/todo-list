@@ -29,8 +29,8 @@ func Init(dbFile string) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
 
+	//DEFER DB CLOSE()
 	if install {
 		_, err := db.Exec(createSchedulerTable)
 		if err != nil {

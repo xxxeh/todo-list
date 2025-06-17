@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func NextDateHandler(w http.ResponseWriter, r *http.Request) {
+func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	now, err := time.Parse(dateFormat, r.FormValue("now"))
 	if err != nil {
 		now = time.Now()
