@@ -12,7 +12,7 @@ const dateFormat string = "20060102"
 func Init() *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Handle("/", http.FileServer(http.Dir("web")))
+	r.Handle("/*", http.FileServer(http.Dir("web")))
 	r.Get("/api/nextdate", nextDateHandler)
 	r.Post("/api/task", addTaskHandler)
 
