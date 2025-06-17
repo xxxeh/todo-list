@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 type Task struct {
@@ -23,9 +22,6 @@ func AddTask(task *Task) (int64, error) {
 		sql.Named("repeat", task.Repeat))
 	if err == nil {
 		id, err = res.LastInsertId()
-	}
-	if err != nil {
-		fmt.Println(err.Error())
 	}
 	return id, err
 }
