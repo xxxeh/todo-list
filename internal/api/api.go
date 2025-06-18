@@ -18,6 +18,8 @@ func Init() *chi.Mux {
 	r.Handle("/*", http.FileServer(http.Dir("web")))
 	r.Get("/api/nextdate", nextDateHandler)
 	r.Get("/api/tasks", tasksHandler)
+	r.Get("/api/task", getTaskHandler)
+	r.Put("/api/task", updateTaskHandler)
 	r.Post("/api/task", addTaskHandler)
 
 	return r
