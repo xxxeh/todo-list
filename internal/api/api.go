@@ -7,13 +7,17 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-const dateFormat string = "20060102"
+const (
+	dateFormat string = "20060102"
+	tasksLimit int    = 30
+)
 
 func Init() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Handle("/*", http.FileServer(http.Dir("web")))
 	r.Get("/api/nextdate", nextDateHandler)
+	r.Get("/api/tasks", tasksHandler)
 	r.Post("/api/task", addTaskHandler)
 
 	return r
