@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -76,12 +77,25 @@ func GetTask(id string) (*Task, error) {
 
 func UpadteTask(task *Task) error {
 	query := `UPDATE scheduler SET date = :date, title = :title, comment = :comment, repeat = :repeat WHERE id = :id`
-	_, err := db.Exec(query,
+	res, err := db.Exec(query,
 		sql.Named("id", task.ID),
 		sql.Named("date", task.Date),
 		sql.Named("title", task.Title),
 		sql.Named("comment", task.Comment),
 		sql.Named("repeat", task.Repeat))
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("incorrect id for updating task")
+	}
+
+	return nil
 }
