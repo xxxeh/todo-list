@@ -8,6 +8,7 @@ import (
 	"github.com/xxxeh/todo-list/internal/db"
 )
 
+// tasksHandler обрабатывает запросы на изменение задачи.
 func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 	var buf bytes.Buffer
@@ -35,7 +36,7 @@ func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.UpadteTask(&task)
+	err = db.UpdateTask(&task)
 
 	if err != nil {
 		writeJson(w, map[string]string{"error": err.Error()}, http.StatusInternalServerError)

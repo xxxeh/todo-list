@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// nextDateHandler обрабатывает запрос вычисление следующей даты повторения задачи.
 func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	now, err := time.Parse(dateFormat, r.FormValue("now"))
 	if err != nil {
@@ -17,7 +18,8 @@ func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	repeat := r.FormValue("repeat")
 	date, err := NextDate(now, dstart, repeat)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		writeJson(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	w.Header().Set("content-type", "application/json")
@@ -25,6 +27,19 @@ func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(date))
 }
 
+// NextDate вычисляет дату следующего повторения задачи.
+//
+// Параметры:
+//
+//	now - текущая дата.
+//	date - дата выполнения задачи.
+//	repeat - правило повторения задачи.
+//
+// Возвращаемые значения:
+//
+//	string - рассчитанная относительно правила, следующая дата повторения задачи.
+//
+//	error - ошибка, которая могла возникнуть в ходе работы.
 func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	date, err := time.Parse(dateFormat, dstart)
 	if err != nil {
@@ -66,6 +81,18 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	return date.Format(dateFormat), nil
 }
 
+// nextYear рассчитывает следющую дату, если задача выполняется ежегодно.
+//
+// Параметры:
+//
+//	date - дата выполнения задачи.
+//	now - текущая дата.
+//	params - интервал повторения задачи.
+//
+// Возвращаемые значения:
+//
+//	time.Time - следующая дата повторения задачи.
+//	error - ошибка, которая могла возникнуть в ходе работы.
 func nextYear(date, now time.Time, params []string) (time.Time, error) {
 	if len(params) > 1 {
 		return date, fmt.Errorf("Недопустимый интервал")
@@ -80,6 +107,18 @@ func nextYear(date, now time.Time, params []string) (time.Time, error) {
 	return date, nil
 }
 
+// nextDay рассчитывает следющую дату, если задача выполняется с интервалом указанным в днях.
+//
+// Параметры:
+//
+//	date - дата выполнения задачи.
+//	now - текущая дата.
+//	params - интервал повторения задачи.
+//
+// Возвращаемые значения:
+//
+//	time.Time - следующая дата повторения задачи.
+//	error - ошибка, которая могла возникнуть в ходе работы.
 func nextDay(date, now time.Time, params []string) (time.Time, error) {
 	if len(params) == 1 {
 		return date, fmt.Errorf("Не указан интервал")
@@ -104,12 +143,25 @@ func nextDay(date, now time.Time, params []string) (time.Time, error) {
 	return date, nil
 }
 
+// nextDay рассчитывает следющую дату, если задача выполняется с интервалом указанным в днях недели.
+//
+// Параметры:
+//
+//	date - дата выполнения задачи.
+//	now - текущая дата.
+//	params - интервал повторения задачи.
+//
+// Возвращаемые значения:
+//
+//	time.Time - следующая дата повторения задачи.
+//	error - ошибка, которая могла возникнуть в ходе работы.
 func nextDayOfWeek(date, now time.Time, params []string) (time.Time, error) {
 	if len(params) == 1 {
 		return date, fmt.Errorf("Не указан интервал")
 	}
 
 	var day [7]bool
+	//Парсим переданный интервал и отмечаем "true" дни недели в массиве day.
 	for _, val := range strings.Split(params[1], ",") {
 		weekday, err := strconv.Atoi(val)
 		if err != nil {
@@ -123,14 +175,19 @@ func nextDayOfWeek(date, now time.Time, params []string) (time.Time, error) {
 		if weekday != 7 {
 			day[weekday] = true
 		} else {
+			//Если weekday = 7, то отмечаем нулевой элемент массива day.
+			//Связано с особенностями нумерации дней недели (в date.Weekday() 0 - воскресенье 1 - понедельник,
+			// 												в params 	     7 - воскресенье 1 - понедельник).
 			day[0] = true
 		}
 
 	}
 
 	for {
+		//Двигаемся с шагом в один день.
 		date = date.AddDate(0, 0, 1)
 		if after(date, now) && day[date.Weekday()] {
+			//Если день недели имеет значение true и дата стала позже текущей, то значит следующая дата найдена, выходим из цикла.
 			break
 		}
 	}
@@ -138,6 +195,19 @@ func nextDayOfWeek(date, now time.Time, params []string) (time.Time, error) {
 	return date, nil
 }
 
+// nextDay рассчитывает следющую дату, если задача выполняется с интервалом указанным в днях месяца.
+// Интервал может быть указан как в виде дней месяца, так и с указанием конкретных месяцев.
+//
+// Параметры:
+//
+//	date - дата выполнения задачи.
+//	now - текущая дата.
+//	params - интервал повторения задачи.
+//
+// Возвращаемые значения:
+//
+//	time.Time - следующая дата повторения задачи.
+//	error - ошибка, которая могла возникнуть в ходе работы.
 func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 	if len(params) == 1 {
 		return date, fmt.Errorf("Не указан интервал")
@@ -150,6 +220,7 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 	currentMonth := date.Month()
 	lastDayOfMonth := time.Date(date.Year(), currentMonth+1, 1, 0, 0, 0, 0, time.Local).AddDate(0, 0, -1)
 
+	//Парсим переданный интервал и отмечаем дни "true" в массиве day.
 	for _, val := range strings.Split(params[1], ",") {
 		d, err := strconv.Atoi(val)
 		if err != nil {
@@ -159,6 +230,7 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 			return date, fmt.Errorf("Недопустимое значение дня %d", d)
 		}
 
+		//Если в интервале указаны дни в виде -1, -2 - рассчитываем последний и предпоследний день текущего месяца.
 		if d == -1 {
 			lastDay = lastDayOfMonth.Day()
 			day[lastDay] = true
@@ -174,6 +246,7 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 		day[d] = true
 	}
 
+	//Если в интервале указаны и конкретные месяцы повторения задачи, то отмечаем их "true" в массиве month.
 	if len(params) > 2 {
 		for _, val := range strings.Split(params[2], ",") {
 			m, err := strconv.Atoi(val)
@@ -187,6 +260,7 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 			month[m] = true
 		}
 	} else {
+		//Если в интервале не указаны конкретные месяцы, то отметим как подходящие все месяцы.
 		for i := range month {
 			month[i] = true
 		}
@@ -195,6 +269,8 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 	for {
 		if lastDay != 0 || penultDay != 0 {
 			if date.Month() != currentMonth {
+				//Если задача должна повторятся в последний и/или предпоследний день месяца и вычисление уже перешло на следующий месяц, то
+				//Пересчитываем последний и/или предпоследний день и обновляем значения массива day.
 				currentMonth = date.Month()
 				day[lastDay] = false
 				day[penultDay] = false
@@ -205,14 +281,12 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 				day[penultDay] = true
 			}
 		}
+		//Двигаемся с шагом в один день.
 		date = date.AddDate(0, 0, 1)
 		if after(date, now) && day[date.Day()] && month[date.Month()] {
+			//Если день и месяц имеют значение true и дата стала позже текущей, то значит следующая дата найдена, выходим из цикла.
 			break
 		}
 	}
 	return date, nil
-}
-
-func after(date1, date2 time.Time) bool {
-	return date1.Truncate(24 * time.Hour).After(date2.Truncate(24 * time.Hour))
 }
