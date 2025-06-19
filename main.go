@@ -5,9 +5,17 @@ import (
 
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/xxxeh/todo-list/internal/db"
 	"github.com/xxxeh/todo-list/internal/server"
 )
+
+// Инициализация переменных окружения из файла .env
+func init() {
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("No .env file found")
+	}
+}
 
 func main() {
 	dbFile := os.Getenv("TODO_DBFILE")
