@@ -8,6 +8,7 @@ import (
 	"github.com/xxxeh/todo-list/internal/db"
 )
 
+// addTaskHandler обрабатывает запросы на добавление новой задачи.
 func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 	var buf bytes.Buffer
