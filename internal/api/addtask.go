@@ -3,9 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/xxxeh/todo-list/internal/db"
 )
@@ -45,25 +43,4 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	writeJson(w, map[string]int64{"id": id}, http.StatusCreated)
 
-}
-
-func checkDate(task *db.Task) error {
-	now := time.Now()
-	if len(task.Date) == 0 {
-		task.Date = now.Format(dateFormat)
-	}
-
-	t, err := time.Parse(dateFormat, task.Date)
-	if err != nil {
-		return fmt.Errorf("Неверный формат даты")
-	}
-
-	if after(now, t) {
-		if len(task.Repeat) == 0 {
-			task.Date = now.Format(dateFormat)
-		} else {
-			task.Date, err = NextDate(now, task.Date, task.Repeat)
-		}
-	}
-	return err
 }

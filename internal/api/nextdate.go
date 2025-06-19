@@ -213,6 +213,4 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 	return date, nil
 }
 
-func after(date1, date2 time.Time) bool {
-	return date1.Truncate(24 * time.Hour).After(date2.Truncate(24 * time.Hour))
-}
+
