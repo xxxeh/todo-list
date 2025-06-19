@@ -10,6 +10,8 @@ type tasksResp struct {
 	Tasks []*db.Task `json:"tasks"`
 }
 
+// tasksHandler обрабатывает запросы на получение списка задач.
+// Список может быть отфильтрован по дате или части названия/комментария задачи, если в запросе передан параметр search.
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
 	search := r.FormValue("search")
 

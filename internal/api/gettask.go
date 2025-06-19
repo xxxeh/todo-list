@@ -6,6 +6,7 @@ import (
 	"github.com/xxxeh/todo-list/internal/db"
 )
 
+// getTaskHandler обрабатывает запрос на получение задачи по идентификатору.
 func getTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	if len(id) == 0 {

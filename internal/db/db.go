@@ -1,3 +1,4 @@
+// Пакет db содержит функции для работы с базой данных SQLite.
 package db
 
 import (
@@ -17,6 +18,15 @@ const createSchedulerTable string = `CREATE TABLE scheduler (
 
 var db *sql.DB
 
+// Init инициализирует подключение к базе данных SQLite и создаёт таблицу scheduler, если база данных ещё не существует.
+//
+// Параметры:
+//
+//	dbFile - путь до файла БД, должен быть указан в переменной окружения TODO_DBFILE
+//
+// Возвращаемые значение:
+//
+//	error - ошибка, если не удалось установить подключение или выполнить sql-запрос.
 func Init(dbFile string) error {
 	_, err := os.Stat(dbFile)
 
@@ -29,8 +39,8 @@ func Init(dbFile string) error {
 	if err != nil {
 		return err
 	}
+	//Подключение не закрываем, т.к. оно должно быть открыто постоянно, пока работает сервис.
 
-	//DEFER DB CLOSE()
 	if install {
 		_, err := db.Exec(createSchedulerTable)
 		if err != nil {

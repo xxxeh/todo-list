@@ -28,6 +28,7 @@ func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // NextDate вычисляет дату следующего повторения задачи.
+//
 // Параметры:
 //
 //	now - текущая дата.
@@ -81,6 +82,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 }
 
 // nextYear рассчитывает следющую дату, если задача выполняется ежегодно.
+//
 // Параметры:
 //
 //	date - дата выполнения задачи.
@@ -106,6 +108,7 @@ func nextYear(date, now time.Time, params []string) (time.Time, error) {
 }
 
 // nextDay рассчитывает следющую дату, если задача выполняется с интервалом указанным в днях.
+//
 // Параметры:
 //
 //	date - дата выполнения задачи.
@@ -141,6 +144,7 @@ func nextDay(date, now time.Time, params []string) (time.Time, error) {
 }
 
 // nextDay рассчитывает следющую дату, если задача выполняется с интервалом указанным в днях недели.
+//
 // Параметры:
 //
 //	date - дата выполнения задачи.
@@ -193,6 +197,7 @@ func nextDayOfWeek(date, now time.Time, params []string) (time.Time, error) {
 
 // nextDay рассчитывает следющую дату, если задача выполняется с интервалом указанным в днях месяца.
 // Интервал может быть указан как в виде дней месяца, так и с указанием конкретных месяцев.
+//
 // Параметры:
 //
 //	date - дата выполнения задачи.
