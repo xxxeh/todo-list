@@ -212,5 +212,3 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 	}
 	return date, nil
 }
-
-
