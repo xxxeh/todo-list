@@ -73,7 +73,7 @@ func nextYear(date, now time.Time, params []string) (time.Time, error) {
 
 	for {
 		date = date.AddDate(1, 0, 0)
-		if date.After(now) {
+		if after(date, now) {
 			break
 		}
 	}
@@ -96,7 +96,7 @@ func nextDay(date, now time.Time, params []string) (time.Time, error) {
 
 	for {
 		date = date.AddDate(0, 0, days)
-		if date.After(now) {
+		if after(date, now) {
 			break
 		}
 	}
@@ -130,7 +130,7 @@ func nextDayOfWeek(date, now time.Time, params []string) (time.Time, error) {
 
 	for {
 		date = date.AddDate(0, 0, 1)
-		if date.After(now) && day[date.Weekday()] {
+		if after(date, now) && day[date.Weekday()] {
 			break
 		}
 	}
@@ -206,9 +206,13 @@ func nextDayOfMonth(date, now time.Time, params []string) (time.Time, error) {
 			}
 		}
 		date = date.AddDate(0, 0, 1)
-		if date.After(now) && day[date.Day()] && month[date.Month()] {
+		if after(date, now) && day[date.Day()] && month[date.Month()] {
 			break
 		}
 	}
 	return date, nil
+}
+
+func after(date1, date2 time.Time) bool {
+	return date1.Truncate(24 * time.Hour).After(date2.Truncate(24 * time.Hour))
 }
