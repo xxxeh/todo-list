@@ -83,6 +83,25 @@ func UpadteTask(task *Task) error {
 		sql.Named("title", task.Title),
 		sql.Named("comment", task.Comment),
 		sql.Named("repeat", task.Repeat))
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("Задача не найдена")
+	}
+
+	return nil
+}
+
+func DeleteTask(id string) error {
+	query := `DELETE FROM scheduler WHERE id = :id`
+	res, err := db.Exec(query, sql.Named("id", id))
 
 	if err != nil {
 		return err
@@ -94,7 +113,26 @@ func UpadteTask(task *Task) error {
 	}
 
 	if count == 0 {
-		return fmt.Errorf("incorrect id for updating task")
+		return fmt.Errorf("Задача не найдена")
+	}
+
+	return nil
+}
+
+func UpdateDate(date string, id string) error {
+	query := `UPDATE scheduler SET date = :date WHERE id = :id`
+	res, err := db.Exec(query, sql.Named("date", date), sql.Named("id", id))
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("Задача не найдена")
 	}
 
 	return nil

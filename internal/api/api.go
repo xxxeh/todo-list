@@ -21,6 +21,8 @@ func Init() *chi.Mux {
 	r.Get("/api/task", getTaskHandler)
 	r.Put("/api/task", updateTaskHandler)
 	r.Post("/api/task", addTaskHandler)
+	r.Post("/api/task/done", completeTaskHandler)
+	r.Delete("/api/task", deleteTaskHandler)
 
 	return r
 }

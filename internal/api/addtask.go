@@ -58,13 +58,12 @@ func checkDate(task *db.Task) error {
 		return fmt.Errorf("Неверный формат даты")
 	}
 
-	if now.After(t) {
+	if after(now, t) {
 		if len(task.Repeat) == 0 {
 			task.Date = now.Format(dateFormat)
 		} else {
 			task.Date, err = NextDate(now, task.Date, task.Repeat)
 		}
 	}
-
 	return err
 }
