@@ -111,7 +111,7 @@ func GetTask(id string) (*Task, error) {
 // Возвращаемые значения:
 //
 //	error - ошибка, которая могла возникнуть в ходе работы.
-func UpadteTask(task *Task) error {
+func UpdateTask(task *Task) error {
 	query := `UPDATE scheduler SET date = :date, title = :title, comment = :comment, repeat = :repeat WHERE id = :id`
 	res, err := db.Exec(query,
 		sql.Named("id", task.ID),
