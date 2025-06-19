@@ -7,6 +7,9 @@ import (
 	"github.com/xxxeh/todo-list/internal/db"
 )
 
+// completeTaskHandler обрабатывает входящие http запросы на пометку задачи выполненной.
+// Ответ отправляется через w. 
+// В случае успешной обработки в тело ответа запишется пустой json, иначе запишется ошибка. 
 func completeTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	if len(id) == 0 {
