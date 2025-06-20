@@ -4,6 +4,7 @@ package db
 import (
 	"database/sql"
 	"os"
+	"path"
 
 	_ "modernc.org/sqlite"
 )
@@ -33,6 +34,12 @@ func Init(dbFile string) error {
 	var install bool
 	if err != nil {
 		install = true
+	}
+
+	//Создаем зависимые каталоги.
+	err = os.MkdirAll(path.Dir(dbFile), 0744)
+	if err != nil {
+		return err
 	}
 
 	db, err = sql.Open("sqlite", dbFile)
