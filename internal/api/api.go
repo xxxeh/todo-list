@@ -28,12 +28,13 @@ func Init() *chi.Mux {
 
 	r.Handle("/*", http.FileServer(http.Dir("web")))
 	r.Get("/api/nextdate", nextDateHandler)
-	r.Get("/api/tasks", tasksHandler)
-	r.Get("/api/task", getTaskHandler)
-	r.Put("/api/task", updateTaskHandler)
-	r.Post("/api/task", addTaskHandler)
-	r.Post("/api/task/done", completeTaskHandler)
-	r.Delete("/api/task", deleteTaskHandler)
+	r.Get("/api/tasks", auth(tasksHandler))
+	r.Get("/api/task", auth(getTaskHandler))
+	r.Put("/api/task", auth(updateTaskHandler))
+	r.Post("/api/task", auth(addTaskHandler))
+	r.Post("/api/task/done", auth(completeTaskHandler))
+	r.Post("/api/signin", authHandler)
+	r.Delete("/api/task", auth(deleteTaskHandler))
 
 	return r
 }

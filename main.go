@@ -8,7 +8,7 @@ import (
 	"github.com/xxxeh/todo-list/internal/server"
 )
 
-// Init инициализирует переменные окружения из файла .env
+// init инициализирует переменные окружения из файла .env
 func init() {
 	if err := godotenv.Load(); err != nil {
 		panic("Не обнаружен файл .env")
