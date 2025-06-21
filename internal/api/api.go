@@ -6,6 +6,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -25,15 +26,17 @@ const (
 //	*chi.Mux - маршрутизатор chi с зарегистрированными обработчиками маршрутов.
 func Init() *chi.Mux {
 	r := chi.NewRouter()
+	r.Use(logger)
 
 	r.Handle("/*", http.FileServer(http.Dir("web")))
 	r.Get("/api/nextdate", nextDateHandler)
-	r.Get("/api/tasks", tasksHandler)
-	r.Get("/api/task", getTaskHandler)
-	r.Put("/api/task", updateTaskHandler)
-	r.Post("/api/task", addTaskHandler)
-	r.Post("/api/task/done", completeTaskHandler)
-	r.Delete("/api/task", deleteTaskHandler)
+	r.Get("/api/tasks", auth(tasksHandler))
+	r.Get("/api/task", auth(getTaskHandler))
+	r.Put("/api/task", auth(updateTaskHandler))
+	r.Post("/api/task", auth(addTaskHandler))
+	r.Post("/api/task/done", auth(completeTaskHandler))
+	r.Post("/api/signin", authHandler)
+	r.Delete("/api/task", auth(deleteTaskHandler))
 
 	return r
 }
@@ -55,7 +58,9 @@ func writeJson(w http.ResponseWriter, data any, status int) {
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(status)
-	w.Write([]byte(resp))
+	w.Write(resp)
+
+	log.Printf("Sending response with status %d - %s", status, string(resp))
 }
 
 // checkDate рассчитывает и сохраняет корректную дату, в которую должна быть назначена задача.

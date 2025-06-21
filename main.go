@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -8,26 +9,26 @@ import (
 	"github.com/xxxeh/todo-list/internal/server"
 )
 
-// Init инициализирует переменные окружения из файла .env
+// init инициализирует переменные окружения из файла .env
 func init() {
 	if err := godotenv.Load(); err != nil {
-		panic("Не обнаружен файл .env")
+		log.Panic("Не обнаружен файл .env")
 	}
 }
 
 func main() {
 	dbFile := os.Getenv("TODO_DBFILE")
 	if len(dbFile) == 0 {
-		panic("Не определена переменная окружения TODO_DBFILE")
+		log.Panic("Не определена переменная окружения TODO_DBFILE")
 	}
 
 	err := db.Init(dbFile)
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 
 	err = server.Run()
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 }

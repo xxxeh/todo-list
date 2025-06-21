@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/xxxeh/todo-list/internal/db"
@@ -18,6 +19,8 @@ func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 		writeJson(w, map[string]string{"error": err.Error()}, http.StatusBadRequest)
 		return
 	}
+	defer r.Body.Close()
+	log.Printf("Requset body - %s", buf.String())
 
 	err = json.Unmarshal(buf.Bytes(), &task)
 	if err != nil {
