@@ -18,6 +18,7 @@ func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 		writeJson(w, map[string]string{"error": err.Error()}, http.StatusBadRequest)
 		return
 	}
+	defer r.Body.Close()
 
 	err = json.Unmarshal(buf.Bytes(), &task)
 	if err != nil {
