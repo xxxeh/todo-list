@@ -20,14 +20,6 @@ COPY web /app/web
 
 COPY --from=builder /app/todo-list .
 
-#Определяем переменные окружения.
-#Переменные определенные здесь имеют приоритет выше, чем переменные из .env,
-#т.к godotenv.Load() не перезаписывает существующие переменные окружения.
-ENV TODO_PORT=7540
-ENV TODO_DBFILE=data/scheduler.db
-ENV TODO_PASSWORD=9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
-ENV TODO_SECRET_KEY=f0ff0c9c364bc8955438c040e6643ca37945052f4ed3e843f1363e8a78615197
-
 EXPOSE 7540
 
 CMD ["./todo-list"]
