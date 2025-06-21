@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -39,6 +40,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
+	log.Printf("Requset body - %s", buf.String())
 
 	var data map[string]string
 	err = json.Unmarshal(buf.Bytes(), &data)
