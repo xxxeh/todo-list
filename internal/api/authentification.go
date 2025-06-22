@@ -19,12 +19,13 @@ import (
 // authHandler обрабатывает запросы на аутентификацию, проверяет правильность введённого пароля,
 // и, в случае успешной проверки, генерирует JWT-токен с использованием секретного ключа и возвращает его в ответе.
 // Ключ для подписания токена и пароль должны хранится в переменных окружения TODO_SECRET_KEY и TODO_PASSWORD соответственно.
+// Если не указана переменная окружения TODO_PASSWORD, то процесс авторизации пропускается.
 func authHandler(w http.ResponseWriter, r *http.Request) {
 	var buf bytes.Buffer
 
+	//Пропускаем авторизацию если не определена переменная TODO_PASSWORD
 	todo_pass := os.Getenv("TODO_PASSWORD")
 	if len(todo_pass) == 0 {
-		writeJson(w, map[string]string{"error": "Не определена переменная окружения TODO_PASSWORD"}, http.StatusInternalServerError)
 		return
 	}
 
@@ -51,13 +52,13 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 
 	pass := data["password"]
 	passHash := sha256.Sum256([]byte(pass))
-	if todo_pass != hex.EncodeToString(passHash[:]) {
-		writeJson(w, map[string]string{"error": "Неверный пароль"}, http.StatusBadRequest)
+	if todo_pass != pass {
+		writeJson(w, map[string]string{"error": "Неверный пароль"}, http.StatusUnauthorized)
 		return
 	}
 
 	claims := jwt.MapClaims{
-		"hash": todo_pass,
+		"hash": hex.EncodeToString(passHash[:]),
 	}
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -74,9 +75,11 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 // Если пользователь авторизован, то управление передается следующему обработчику.
 func auth(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		//Пропускаем авторизацию если не определена переменная TODO_PASSWORD
 		todo_pass := os.Getenv("TODO_PASSWORD")
 		if len(todo_pass) == 0 {
-			http.Error(w, "Не определена переменная окружения TODO_SECRET_KEY", http.StatusInternalServerError)
+			next(w, r)
 			return
 		}
 
@@ -113,9 +116,10 @@ func auth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		pass := claims["hash"]
-		if pass != todo_pass {
-			writeJson(w, map[string]string{"error": "Authentification required"}, http.StatusUnauthorized)
+		passHash := claims["hash"]
+		todoPassHash := sha256.Sum256([]byte(todo_pass))
+		if passHash != hex.EncodeToString(todoPassHash[:]) {
+			writeJson(w, map[string]string{"error": "Authentification required: Pass_hash != todo_pass_hash"}, http.StatusUnauthorized)
 			return
 		}
 
